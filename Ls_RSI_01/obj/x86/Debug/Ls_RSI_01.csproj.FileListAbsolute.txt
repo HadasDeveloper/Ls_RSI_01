@@ -1,0 +1,16 @@
+D:\Alla\NotWork\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Alla\NotWork\Ls_RSI_01\Ls_RSI_01\bin\Debug\Ls_RSI_01.exe
+D:\Alla\NotWork\Ls_RSI_01\Ls_RSI_01\bin\Debug\Ls_RSI_01.pdb
+D:\Alla\NotWork\Ls_RSI_01\Ls_RSI_01\bin\Debug\Krs.Ats.IBNet.dll
+D:\Alla\NotWork\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Ls_RSI_01.exe
+D:\Alla\NotWork\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Ls_RSI_01.pdb
+D:\Alla\NotWork\Ls_RSI_01\Ls_RSI_01\bin\Debug\lib\Krs.Ats.IBNet.dll
+D:\Alla\NotWork\Ls_RSI_01\Ls_RSI_01\bin\Debug\Ls_RSI_01.exe.config
+D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\bin\Debug\lib\Krs.Ats.IBNet.dll
+D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\bin\Debug\Ls_RSI_01.exe.config
+D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\bin\Debug\Ls_RSI_01.exe
+D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\bin\Debug\Ls_RSI_01.pdb
+D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\bin\Debug\Krs.Ats.IBNet.dll
+D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Ls_RSI_01.exe
+D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Ls_RSI_01.pdb
