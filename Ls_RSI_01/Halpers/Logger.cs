@@ -4,7 +4,7 @@ using System.IO;
 using Ls_RSI_01.Model;
 using System.Globalization;
 
-namespace Ls_RSI_01.Halpers
+namespace Ls_RSI_01.helper
 {
     public static class Logger
     {

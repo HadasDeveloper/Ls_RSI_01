@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using Ls_RSI_01.Halpers;
+using Ls_RSI_01.helper;
 using System.Configuration;
 
 namespace Ls_RSI_01.Model
