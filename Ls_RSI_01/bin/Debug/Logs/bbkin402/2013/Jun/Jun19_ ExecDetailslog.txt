@@ -1,1 +1,0 @@
-19/06/2013 13:08:39 : ClientManager.client_ExecDetails(): Execution Time: 20130619  13:08:48, Symbol: USD, Side: Sold Quantity: 25000

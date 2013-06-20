@@ -46,7 +46,7 @@ namespace Ls_RSI_01.Model
                     }
                     catch (Exception e)
                     {
-                        Logger.WriteToLog(DateTime.Now, "DataHelper.Connect(): " + e.Message);
+                        Logger.WriteToLog(DateTime.Now, "DataHelper.Connect(): " + e.Message,Program.UserId);
                         if (_connection.State != ConnectionState.Open)
                             _isConnected = false;
                     }
@@ -67,7 +67,7 @@ namespace Ls_RSI_01.Model
                 {
                     if (_connection.State != ConnectionState.Open)
                         _isConnected = false;
-                    Logger.WriteToLog(DateTime.Now, "DataHelper.Disconnect(): " + e.Message);
+                    Logger.WriteToLog(DateTime.Now, "DataHelper.Disconnect(): " + e.Message,Program.UserId);
                 }
                 finally
                 {
@@ -98,7 +98,7 @@ namespace Ls_RSI_01.Model
             }
             catch (Exception e)
             {
-                Logger.WriteToLog(DateTime.Now, "DataHelper.GetConnection(): " + e.Message);
+                Logger.WriteToLog(DateTime.Now, "DataHelper.GetConnection(): " + e.Message, Program.UserId);
             }
         }
 
@@ -152,7 +152,7 @@ namespace Ls_RSI_01.Model
             }
             catch (Exception e)
             {
-                Logger.WriteToLog(DateTime.Now, "DataHelper.ExecuteSQL(): " + e.Message);
+                Logger.WriteToLog(DateTime.Now, "DataHelper.ExecuteSQL(): " + e.Message, Program.UserId);
                 return false;
             }
             return true;
@@ -203,7 +203,7 @@ namespace Ls_RSI_01.Model
             }
             catch (SqlException e)
             {
-                Logger.WriteToLog(DateTime.Now,"DataHelper.ExecuteSqlForData(): " + e.Message);
+                Logger.WriteToLog(DateTime.Now, "DataHelper.ExecuteSqlForData(): " + e.Message, Program.UserId);
                 return result;
             }
             finally

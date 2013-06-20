@@ -1,0 +1,158 @@
+
+20/06/2013 11:22:03 : Start Process for userId:bbkin402
+20/06/2013 11:22:17 : Next Valid Id: 1
+20/06/2013 11:22:17 : ClientManager.client_Error(): Market data farm connection is OK:cashfarm
+20/06/2013 11:22:17 : ClientManager.client_Error(): Market data farm connection is OK:usfarm
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: BBY whith amount: 59
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: BIG whith amount: 50
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: BSX whith amount: 185
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: CA whith amount: 57
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: CVC whith amount: 119
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: DELL whith amount: 128
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: DF whith amount: 166
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: EEM whith amount: 41
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: ETFC whith amount: 151
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: EWM whith amount: 111
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: EWS whith amount: 128
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: FE whith amount: 43
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: FHN whith amount: 151
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: ILF whith amount: 42
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: IRM whith amount: 59
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: JDSU whith amount: 119
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: KEY whith amount: 166
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: LUV whith amount: 128
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: MS whith amount: 61
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: MU whith amount: 138
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: MXIM whith amount: 61
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: NVDA whith amount: 119
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: PGR whith amount: 69
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: QEP whith amount: 55
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: S whith amount: 238
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: SCG whith amount: 34
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: SHY whith amount: 19
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: UNG whith amount: 83
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: USB whith amount: 47
+20/06/2013 11:22:18 : ClientManager.client_UpdatePortfolio: found symbol: UUP whith amount: 75
+20/06/2013 11:22:18 : ClientCurrentTime: 20/06/2013 08:22:28
+20/06/2013 11:22:18 : ClientManager.PlaceOrdersForMarketEntry(): start placing orders for entry
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 1    symbol:BIG  diraction:Buy  amount:50   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 2    symbol:CVC  diraction:Buy  amount:119  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 3    symbol:DELL diraction:Buy  amount:128  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 4    symbol:DF   diraction:Buy  amount:166  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 5    symbol:EEM  diraction:Buy  amount:41   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 6    symbol:EWM  diraction:Buy  amount:111  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 7    symbol:EWS  diraction:Buy  amount:128  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 8    symbol:FE   diraction:Buy  amount:43   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 9    symbol:ILF  diraction:Buy  amount:42   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 10   symbol:IRM  diraction:Buy  amount:59   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 11   symbol:LUV  diraction:Buy  amount:128  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 12   symbol:MXIM diraction:Buy  amount:61   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 13   symbol:PGR  diraction:Buy  amount:69   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 14   symbol:SCG  diraction:Buy  amount:34   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 15   symbol:UNG  diraction:Buy  amount:83   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 16   symbol:BBY  diraction:Sell amount:59   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 17   symbol:BSX  diraction:Sell amount:185  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 18   symbol:CA   diraction:Sell amount:57   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 19   symbol:ETFC diraction:Sell amount:151  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 20   symbol:FHN  diraction:Sell amount:151  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 21   symbol:JDSU diraction:Sell amount:119  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 22   symbol:KEY  diraction:Sell amount:166  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 23   symbol:MS   diraction:Sell amount:61   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 24   symbol:MU   diraction:Sell amount:138  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 25   symbol:NVDA diraction:Sell amount:119  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 26   symbol:QEP  diraction:Sell amount:55   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 27   symbol:S    diraction:Sell amount:238  stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 28   symbol:SHY  diraction:Sell amount:19   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 29   symbol:USB  diraction:Sell amount:47   stutus:None
+20/06/2013 11:22:19 : ClientManager.PlaceOrdersForMarketEntry(): orderid: 30   symbol:UUP  diraction:Sell amount:75   stutus:None
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 50 BIG NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 128 DELL NASDAQ.NMS
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 166 DF NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 119 CVC NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 111 EWM ARCA
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 128 EWS ARCA
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 41 EEM ARCA
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 43 FE NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 42 ILF ARCA
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 59 IRM NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 128 LUV NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 61 MXIM NASDAQ.NMS
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 83 UNG ARCA
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 69 PGR NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+BUY 34 SCG NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 59 BBY NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 185 BSX NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 57 CA NASDAQ.NMS
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 151 ETFC NASDAQ.NMS
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 151 FHN NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 119 JDSU NASDAQ.NMS
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 166 KEY NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 61 MS NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 55 QEP NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 119 NVDA NASDAQ.NMS
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 138 MU NASDAQ.NMS
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 19 SHY ARCA
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 238 S NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 47 USB NYSE
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:19 : ClientManager.client_Error(): Order Message:
+SELL 75 UUP ARCA
+Warning: your order will not be placed at the exchange until 2013-06-20 09:30:00 US/Eastern
+20/06/2013 11:22:20 : Done

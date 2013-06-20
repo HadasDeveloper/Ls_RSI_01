@@ -17,7 +17,7 @@ namespace Ls_RSI_01
                     ClientManager.Start(args);
                     break;
                 default:
-                    Logger.WriteToLog(DateTime.Now ,"Program.Main() : Number of elements does not match for starting the program");
+                    Logger.WriteToProgramLog(DateTime.Now, "Program.Main() : Number of elements does not match for starting the program");
                     break;
             }
         }

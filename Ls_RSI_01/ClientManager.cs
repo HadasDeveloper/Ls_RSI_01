@@ -20,17 +20,16 @@ namespace Ls_RSI_01
         private static bool fNextValisId;
         private static bool done;
         private static UserSettings user;
+
         
-
-
         public static void Start(string[] args)
         {
-            Logger.WriteStartToLog(DateTime.Now,"Start Process for userId:" + args[0]);
+            Logger.WriteStartToLog(DateTime.Now, "Start Process for userId:" + Program.UserId, Program.UserId);
 
             DataContext dbmanager = new DataContext();
 
             //get user's settings 
-            user = dbmanager.GetUserSettings(args[0]);
+            user = dbmanager.GetUserSettings(Program.UserId);
 
             //set Mode to "entry" (for market entry) or "exit" (for market exit) 
             //if args[1] = 1    :   Mode = "entry"
@@ -43,10 +42,6 @@ namespace Ls_RSI_01
 
             //if mode = 'sell' just get the last RSI orders list
             orders = dbmanager.GetRsiOrders(user);
-
-            //orders[0].Symbol = "USD.JPY";
-            //orders[0].Amount = 25000;
-            //orders[0].Direction = "Sell";
 
             client = new IBClient {ThrowExceptions = true};
             client.NextValidId += (ClientNextValidId);
@@ -79,10 +74,10 @@ namespace Ls_RSI_01
 
                 Thread.Sleep(1000);
                 if(DateTime.Now.Subtract(startingTime).Minutes >= 0.5)
-                    Logger.WriteToLog(DateTime.Now, "Time Down");
+                    Logger.WriteToLog(DateTime.Now, "Time Down", Program.UserId);
             }
 
-            Logger.WriteToLog(DateTime.Now, "Done");
+            Logger.WriteToLog(DateTime.Now, "Done", Program.UserId);
         }
 
         //Get action Mode (buy/sell) from program starting elements  
@@ -97,7 +92,7 @@ namespace Ls_RSI_01
                     Mode = "exit";
                     break;
                 default:
-                    Logger.WriteToLog(DateTime.Now, "ClientManager.GetOrdersMode: wrong action mode");
+                    Logger.WriteToLog(DateTime.Now, "ClientManager.GetOrdersMode: wrong action mode", Program.UserId);
                     Environment.Exit(0);
                     break;
             }
@@ -115,31 +110,31 @@ namespace Ls_RSI_01
             done = true;
         }
 
+
         //entry to the market and buy/sell orders determined by calculating the RSI values
         static public void PlaceOrdersForMarketEntry()
         {
             int id = nextOrderId;
-
-            Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForMarketEntry(): start placing orders for entry");
+           
+            Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForMarketEntry(): start placing orders for entry", Program.UserId);
 
            foreach (OrderInfo order in orders)
             {
                 if (order.Amount == 0)
                     continue;
 
-                //Equity stock = new Equity(order.Symbol);
-                Forex stock = new Forex("usd","jpy");
-                Order contract = new Order { Action = orders[0].Direction == "Buy" ? ActionSide.Buy : ActionSide.Sell, TotalQuantity = order.Amount };
+                Equity stock = new Equity(order.Symbol);
+                Order contract = new Order { Action = order.Direction == "Buy" ? ActionSide.Buy : ActionSide.Sell, TotalQuantity = order.Amount };
                 order.OrderId = id;
-                int ordersCounter = 0;
+
                 try
                 {
                     client.PlaceOrder(id++, stock, contract);
-                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrdersForMarketEntry(): index:{0,-4}  orderid: {1,-4} symbol:{2,-4} diraction:{3,-4} amount:{4,-4} stutus:{5,-4}", ordersCounter++, contract.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity, order.Status));
+                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrdersForMarketEntry(): orderid: {0,-4} symbol:{1,-4} diraction:{2,-4} amount:{3,-4} stutus:{4,-4}", order.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity, order.Status),Program.UserId);
                 }
                 catch (Exception e)
                 {
-                    Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForBuy(): " + e.Message);
+                    Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForBuy(): " + e.Message, Program.UserId);
                 }
             }
         }
@@ -149,7 +144,7 @@ namespace Ls_RSI_01
         {
             int id = nextOrderId;
 
-            Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForMarketExit(): start placing orders for exit");
+            Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForMarketExit(): start placing orders for exit", Program.UserId);
 
             foreach (OrderInfo order in orders)
             {
@@ -158,20 +153,19 @@ namespace Ls_RSI_01
                    continue;
 
                 Equity stock = new Equity(order.Symbol);
-                //Order contract = new Order() { Action = order.Direction == "Buy" ? ActionSide.Sell : ActionSide.Buy, TotalQuantity = order.RealAmount };
-                
                                                //if protfolio amount nagative, buy the order if, positive sell the order 
                 Order contract = new Order{ Action = order.RealAmount < 0 ? ActionSide.Buy : ActionSide.Sell, TotalQuantity = Math.Abs(order.RealAmount) };
-                int ordersCounter = 0;
+                order.OrderId = id;
+
                 try
                 {
                     client.PlaceOrder(id++, stock, contract);
-                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrdersForMarketEntry(): index:{0,-4}  orderid: {1,-4} symbol:{2,-4} diraction:{3,-4} amount:{4,-4} stutus:{5,-4}", ordersCounter++, contract.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity, order.Status));
+                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrdersForMarketEntry(): orderid: {0,-4} symbol:{1,-4} diraction:{2,-4} amount:{3,-4} stutus:{4,-4}", contract.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity, order.Status), Program.UserId);
                 
                 }
                 catch (Exception e)
                 {
-                    Logger.WriteToLog(DateTime.Now,"ClientManager.PlaceOrdersForSell(): " + e.Message);
+                    Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForSell(): " + e.Message, Program.UserId);
                     
                 }
             }
@@ -182,7 +176,7 @@ namespace Ls_RSI_01
         //find next valid ID
         static void ClientNextValidId(object sender, NextValidIdEventArgs e)
         {
-            Logger.WriteToLog(DateTime.Now,"Next Valid Id: " + e.OrderId);
+            Logger.WriteToLog(DateTime.Now, "Next Valid Id: " + e.OrderId, Program.UserId);
 
             nextOrderId = e.OrderId;
             fNextValisId = true;
@@ -191,7 +185,7 @@ namespace Ls_RSI_01
         //called if accured tws error
         static void ClientError(object sender, ErrorEventArgs e)
         {
-            Logger.WriteToLog(DateTime.Now,"ClientManager.client_Error(): " + e.ErrorMsg);
+            Logger.WriteToLog(DateTime.Now, "ClientManager.client_Error(): " + e.ErrorMsg, Program.UserId);
             Console.WriteLine(e.ErrorMsg);
         }
 
@@ -203,7 +197,7 @@ namespace Ls_RSI_01
                 if (e.Contract.Symbol.Equals((order.Symbol)))
                 {
                     order.RealAmount = e.Position;
-                    Logger.WriteToLog(DateTime.Now,"ClientManager.client_UpdatePortfolio: found symbol: " + e.Contract.Symbol +" whith amount: " + e.Position);
+                    Logger.WriteToLog(DateTime.Now, "ClientManager.client_UpdatePortfolio: found symbol: " + e.Contract.Symbol + " whith amount: " + e.Position, Program.UserId);
                 }
         }
     
@@ -221,7 +215,7 @@ namespace Ls_RSI_01
                 {
                     order.Status = e.Status;
                     counter++;
-                    Logger.WriteToLog(DateTime.Now, "order: " + order.Symbol + " status:" + order.Status, "OrderStatus");
+                    Logger.WriteToLog(DateTime.Now, "ClientManager.ClientOrderStatus: Mode: " + Mode + " order: " + order.Symbol + " status: " + order.Status, " OrderStatus");
                 }
         }
 
@@ -233,7 +227,7 @@ namespace Ls_RSI_01
 
         static void ClientCurrentTime(object sender, CurrentTimeEventArgs e)
         {
-            Logger.WriteToLog(DateTime.Now, "ClientCurrentTime: " + e.Time);
+            Logger.WriteToLog(DateTime.Now, "ClientCurrentTime: " + e.Time, Program.UserId);
             fCurentTime = true;
         }
         
