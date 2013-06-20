@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientManager.cs" />
-    <Compile Include="Halpers\Logger.cs" />
+    <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Model\UserSetting .cs" />
     <Compile Include="Model\DataContext.cs" />
     <Compile Include="Model\DataHelper.cs" />
