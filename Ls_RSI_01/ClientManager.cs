@@ -21,7 +21,6 @@ namespace Ls_RSI_01
         private static bool done;
         private static UserSettings user;
 
-        
         public static void Start(string[] args)
         {
             Logger.WriteStartToLog(DateTime.Now, "Start Process for userId:" + Program.UserId, Program.UserId);
