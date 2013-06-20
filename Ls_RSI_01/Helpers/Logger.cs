@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using Ls_RSI_01.Model;
 using System.Globalization;
+using System.Configuration;
 
 namespace Ls_RSI_01.helper
 {
     public static class Logger
     {
-        public static string FolderPath = string.Format("D:\\Alla\\NotWork\\RSI\\Ls_RSI_01\\Ls_RSI_01\\bin\\Debug\\Logs\\{0}\\{1}\\{2}\\", Program.UserId, DateTime.Now.Year, DateTime.Now.ToString("MMM", CultureInfo.InvariantCulture));
+        public static string FolderPath = string.Format(ConfigurationManager.AppSettings["folderPath"], Program.UserId, DateTime.Now.Year, DateTime.Now.ToString("MMM", CultureInfo.InvariantCulture));
 //        public static string FileName;
 
         static Logger()

@@ -9,46 +9,55 @@ namespace Ls_RSI_01.Model
 {
     public class DataHelper
     {
-        private const string ConnectionFormat = "User Id={0};Data Source={1};Initial Catalog={2};connection timeout={3};Password={4}";
 
-        private const string DataSource = "WORK\\HADASSQL";
-        private const string Password = "m4ffCr113P3vqOGGtuTW";
-        private const string UserId = "DevUser";
-        private const string DefaultDb = "Dev";
-        private const int ConnectionTimeout = 3600;
+        private readonly string connectionFormat = ConfigurationManager.AppSettings["connectionFormat"];
 
-        private SqlConnection _connection;
-        private bool _isConnected;
+        private readonly string dataSource = ConfigurationManager.AppSettings["dataSource"];
+        private readonly string password = ConfigurationManager.AppSettings["password"];
+        private readonly string userId = ConfigurationManager.AppSettings["userId"];
+        private readonly string defaultDb = ConfigurationManager.AppSettings["defaultDB"];
+        private readonly int connectionTimeout = Convert.ToInt16(ConfigurationManager.AppSettings["connectionTimeout"]);
+
+        //private const string connectionFormat = "User Id={0};Data Source={1};Initial Catalog={2};connection timeout={3};Password={4}";
+
+        //private const string dataSource = "WORK\\HADASSQL";
+        //private const string password = "m4ffCr113P3vqOGGtuTW";
+        //private const string userId = "DevUser";
+        //private const string defaultDb = "Dev";
+        //private const int connectionTimeout = 3600;
+
+        private SqlConnection connection;
+        private bool isConnected;
 
         public bool IsConnected
         {
-            get { return _isConnected; }
+            get { return isConnected; }
         }
 
         public void Connect(string initialCatalog)
         {
-            if (_isConnected) return;
-            if (_connection != null && _connection.State == ConnectionState.Connecting)
+            if (isConnected) return;
+            if (connection != null && connection.State == ConnectionState.Connecting)
             {
                 return;
             }
 
             lock (new object())
             {
-                _connection = new SqlConnection { ConnectionString = string.Format(ConnectionFormat, UserId, DataSource, initialCatalog, ConnectionTimeout, Password) };
+                connection = new SqlConnection { ConnectionString = string.Format(connectionFormat, userId, dataSource, initialCatalog, connectionTimeout, password) };
 
-                if (_connection.State != ConnectionState.Open)
+                if (connection.State != ConnectionState.Open)
                 {
                     try
                     {
-                        _connection.Open();
-                        _isConnected = true;
+                        connection.Open();
+                        isConnected = true;
                     }
                     catch (Exception e)
                     {
                         Logger.WriteToLog(DateTime.Now, "DataHelper.Connect(): " + e.Message,Program.UserId);
-                        if (_connection.State != ConnectionState.Open)
-                            _isConnected = false;
+                        if (connection.State != ConnectionState.Open)
+                            isConnected = false;
                     }
                 }
             }
@@ -56,32 +65,32 @@ namespace Ls_RSI_01.Model
 
         public void Disconnect()
         {
-            if (_isConnected)
+            if (isConnected)
             {
                 try
                 {
-                    _connection.Close();
-                    _isConnected = false;
+                    connection.Close();
+                    isConnected = false;
                 }
                 catch (Exception e)
                 {
-                    if (_connection.State != ConnectionState.Open)
-                        _isConnected = false;
+                    if (connection.State != ConnectionState.Open)
+                        isConnected = false;
                     Logger.WriteToLog(DateTime.Now, "DataHelper.Disconnect(): " + e.Message,Program.UserId);
                 }
                 finally
                 {
-                    _connection = null;
+                    connection = null;
                 }
             }
         }
 
         private SqlConnection GetConnection()
         {
-            if (_connection == null || _connection.State != ConnectionState.Open)
-                Connect(DefaultDb);
+            if (connection == null || connection.State != ConnectionState.Open)
+                Connect(defaultDb);
 
-            return _connection;
+            return connection;
         }
 
 
@@ -134,7 +143,7 @@ namespace Ls_RSI_01.Model
             SqlCommand command;
 
             if (!IsConnected)
-                Connect(DefaultDb);
+                Connect(defaultDb);
 
             try
             {
@@ -160,8 +169,8 @@ namespace Ls_RSI_01.Model
 
         public DataTable ExecuteSqlForData(string sql)
         {
-            if (!IsConnected || _connection == null)
-                Connect(DefaultDb);
+            if (!IsConnected || connection == null)
+                Connect(defaultDb);
 
             System.Diagnostics.Debug.WriteLine(sql);
 
