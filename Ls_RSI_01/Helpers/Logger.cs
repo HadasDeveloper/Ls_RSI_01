@@ -5,7 +5,7 @@ using Ls_RSI_01.Model;
 using System.Globalization;
 using System.Configuration;
 
-namespace Ls_RSI_01.helper
+namespace Ls_RSI_01.Helpers
 {
     public static class Logger
     {

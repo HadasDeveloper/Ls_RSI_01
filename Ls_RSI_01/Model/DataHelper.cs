@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using Ls_RSI_01.helper;
 using System.Configuration;
+using Ls_RSI_01.Helpers;
 
 namespace Ls_RSI_01.Model
 {

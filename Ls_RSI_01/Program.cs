@@ -1,5 +1,5 @@
 ﻿using System;
-using Ls_RSI_01.helper;
+using Ls_RSI_01.Helpers;
 
 namespace Ls_RSI_01
 {
