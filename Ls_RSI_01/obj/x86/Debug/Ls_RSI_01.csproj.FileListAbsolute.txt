@@ -14,3 +14,17 @@ D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\bin\Debug\Krs.Ats.IBNet.dll
 D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\ResolveAssemblyReference.cache
 D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Ls_RSI_01.exe
 D:\Alla\NotWork\RSI\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Ls_RSI_01.pdb
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\bin\Debug\lib\Krs.Ats.IBNet.dll
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\bin\Debug\Ls_RSI_01.exe.config
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\bin\Debug\Ls_RSI_01.exe
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\bin\Debug\Ls_RSI_01.pdb
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\bin\Debug\Krs.Ats.IBNet.dll
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Ls_RSI_01.exe
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Ls_RSI_01.pdb
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Interop.TaskScheduler.dll
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\obj\x86\Debug\Ls_RSI_01.csproj.ResolveComReference.cache
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\bin\Debug\Microsoft.Win32.TaskScheduler.dll
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\bin\Debug\Microsoft.Win32.TaskScheduler.xml
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\bin\Debug\it\Microsoft.Win32.TaskScheduler.resources.dll
+D:\Alla\Develupment\Ls_RSI_01\Ls_RSI_01\Ls_RSI_01\bin\Debug\zh-CN\Microsoft.Win32.TaskScheduler.resources.dll

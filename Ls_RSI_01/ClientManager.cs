@@ -5,6 +5,7 @@ using Krs.Ats.IBNet.Contracts;
 using Ls_RSI_01.Helpers;
 using Ls_RSI_01.Model;
 using System.Threading;
+using Microsoft.Win32.TaskScheduler;
 
 namespace Ls_RSI_01
 {
@@ -55,7 +56,22 @@ namespace Ls_RSI_01
             int randomNumber = random.Next(0, 10000);
 
             //connect to TWS
-            client.Connect("127.0.0.1", user.UserPort, randomNumber);
+            try
+            {
+                client.Connect("127.0.0.1", user.UserPort, randomNumber);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteToLog(DateTime.Now, "can not find open tws, starting win task", Program.UserId);
+                TaskService ts = new TaskService();
+                Task task = ts.FindTask("Start TWS userid = " + Program.UserId, true);
+                task.Stop();
+                task.Run();
+
+                Thread.Sleep(6*6000);
+                client.Connect("127.0.0.1", user.UserPort, randomNumber);
+            }
+            
 
             client.RequestAccountUpdates(true, "");
             client.RequestCurrentTime();
