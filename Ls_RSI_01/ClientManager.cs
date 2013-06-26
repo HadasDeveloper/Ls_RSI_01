@@ -6,6 +6,7 @@ using Ls_RSI_01.Helpers;
 using Ls_RSI_01.Model;
 using System.Threading;
 using Microsoft.Win32.TaskScheduler;
+using System.Diagnostics;
 
 namespace Ls_RSI_01
 {
@@ -67,7 +68,8 @@ namespace Ls_RSI_01
                 return;
             }
 
-            
+            Logger.WriteToLog(DateTime.Now, "connected successfully to TWS", Program.UserId);
+
             client.RequestAccountUpdates(true, "");
             client.RequestCurrentTime();
            
@@ -118,32 +120,19 @@ namespace Ls_RSI_01
             }
             catch (Exception)
             {
-                Logger.WriteToLog(DateTime.Now, "can not find open tws, starting win task", Program.UserId);
-                TaskService ts = new TaskService();
-
-                Task task = ts.FindTask(String.Format("Start TWS userid = {0}", Program.UserId));
-
-                if (task != null)
-                {   
-                    switch (task.State)
-                    {
-                        case TaskState.Running:
-                            task.Stop();
-                            break;
-
-                        case TaskState.Disabled:
-                            task.Enabled = true;
-                            break;
-
-                        default:
-                            break;
-                    }
-                task.Run();
+                Process runTws = new Process();
+                runTws.StartInfo.CreateNoWindow = false;
+                runTws.StartInfo.WorkingDirectory = "C:\\JTS_GA~1\\Jts";
+                runTws.StartInfo.FileName = "C:\\Windows\\system32\\javaw.exe";
+                runTws.StartInfo.Arguments = @"-cp jts.jar;total.2012.jar -Dsun.java2d.noddraw=true -Dswing.boldMetal=false -Dsun.locale.formatasdefault=true -Xmx768M -XX:MaxPermSize=128M jclient/LoginFrame C:\\JTS_GA~1\\Jts username=bbkin402 password=bbking75";
+                runTws.StartInfo.UseShellExecute = false;
+                runTws.StartInfo.RedirectStandardOutput = false;
+                runTws.Start(); 
 
                 Thread.Sleep(6*6000);
                 client.Connect("127.0.0.1", user.UserPort, randomNumber);
             }
-        }
+        
         }
 
 
