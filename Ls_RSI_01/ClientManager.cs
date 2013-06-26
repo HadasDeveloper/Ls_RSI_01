@@ -24,17 +24,17 @@ namespace Ls_RSI_01
 
         public static void Start(string[] args)
         {
-            Logger.WriteStartToLog(DateTime.Now, "Start Process for userId:" + Program.UserId, Program.UserId);
+            //set Mode to "entry" (for market entry) or "exit" (for market exit) 
+            //if args[1] = 1    :   Mode = "entry"
+            //if args[1] = -1   :   Mode = "exit"
+            GetProcessMode(args[1]);
+
+            Logger.WriteStartToLog(DateTime.Now, String.Format("Start Process for userId: {0} for {1}" , Program.UserId, Mode), Program.UserId);
 
             DataContext dbmanager = new DataContext();
 
             //get user's settings 
             user = dbmanager.GetUserSettings(Program.UserId);
-
-            //set Mode to "entry" (for market entry) or "exit" (for market exit) 
-            //if args[1] = 1    :   Mode = "entry"
-            //if args[1] = -1   :   Mode = "exit"
-            GetProcessMode(args[1]);
 
             //if mode = 'entry' calculate new rsi orders and then get last(new) RSI orders list
             if (Mode.Equals("entry"))
@@ -52,31 +52,24 @@ namespace Ls_RSI_01
             client.UpdateAccountValue += (ClientUpdateAccountValue);
             client.CurrentTime += (ClientCurrentTime);
 
-            Random random = new Random();
-            int randomNumber = random.Next(0, 10000);
-
             //connect to TWS
-            try
-            {
-                client.Connect("127.0.0.1", user.UserPort, randomNumber);
-            }
-            catch (Exception e)
-            {
-                Logger.WriteToLog(DateTime.Now, "can not find open tws, starting win task", Program.UserId);
-                TaskService ts = new TaskService();
-                Task task = ts.FindTask("Start TWS userid = " + Program.UserId, true);
-                task.Stop();
-                task.Run();
+            int connectAttempt = 0;
 
-                Thread.Sleep(6*6000);
-                client.Connect("127.0.0.1", user.UserPort, randomNumber);
+            while (!client.Connected && connectAttempt <= 3)
+            {    
+                ConnectToTws();
+                connectAttempt++;
             }
+
+            if (!client.Connected)
+            {   
+                Logger.WriteToLog(DateTime.Now, "cannot connect to TWS, terminate the program", Program.UserId);
+                return;
+            }
+
             
-
             client.RequestAccountUpdates(true, "");
             client.RequestCurrentTime();
-
-//            client.RequestExecutions(1,);
            
             DateTime startingTime = DateTime.Now;
 
@@ -114,6 +107,46 @@ namespace Ls_RSI_01
 
         }
 
+        public static void ConnectToTws()
+        {
+            Random random = new Random();
+            int randomNumber = random.Next(0, 10000);
+
+            try
+            {
+                client.Connect("127.0.0.1", user.UserPort, randomNumber);
+            }
+            catch (Exception)
+            {
+                Logger.WriteToLog(DateTime.Now, "can not find open tws, starting win task", Program.UserId);
+                TaskService ts = new TaskService();
+
+                Task task = ts.FindTask(String.Format("Start TWS userid = {0}", Program.UserId));
+
+                if (task != null)
+                {   
+                    switch (task.State)
+                    {
+                        case TaskState.Running:
+                            task.Stop();
+                            break;
+
+                        case TaskState.Disabled:
+                            task.Enabled = true;
+                            break;
+
+                        default:
+                            break;
+                    }
+                task.Run();
+
+                Thread.Sleep(6*6000);
+                client.Connect("127.0.0.1", user.UserPort, randomNumber);
+            }
+        }
+        }
+
+
         //navigate between the exit and entry to the market
         public static void Work()
         {
@@ -149,7 +182,7 @@ namespace Ls_RSI_01
                 }
                 catch (Exception e)
                 {
-                    Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForBuy(): " + e.Message, Program.UserId);
+                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrdersForBuy(): {0}", e.Message), Program.UserId);
                 }
             }
         }
@@ -180,7 +213,7 @@ namespace Ls_RSI_01
                 }
                 catch (Exception e)
                 {
-                    Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForSell(): " + e.Message, Program.UserId);
+                    Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.PlaceOrdersForSell(): {0}", e.Message), Program.UserId);
                     
                 }
             }
@@ -191,7 +224,7 @@ namespace Ls_RSI_01
         //find next valid ID
         static void ClientNextValidId(object sender, NextValidIdEventArgs e)
         {
-            Logger.WriteToLog(DateTime.Now, "Next Valid Id: " + e.OrderId, Program.UserId);
+            Logger.WriteToLog(DateTime.Now, string.Format("Next Valid Id: {0}", e.OrderId), Program.UserId);
 
             nextOrderId = e.OrderId;
             fNextValisId = true;
@@ -200,7 +233,7 @@ namespace Ls_RSI_01
         //called if accured tws error
         static void ClientError(object sender, ErrorEventArgs e)
         {
-            Logger.WriteToLog(DateTime.Now, "ClientManager.client_Error(): " + e.ErrorMsg, Program.UserId);
+            Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.client_Error(): {0}", e.ErrorMsg), Program.UserId);
             Console.WriteLine(e.ErrorMsg);
         }
 
@@ -212,7 +245,7 @@ namespace Ls_RSI_01
                 if (e.Contract.Symbol.Equals((order.Symbol)))
                 {
                     order.RealAmount = e.Position;
-                    Logger.WriteToLog(DateTime.Now, "ClientManager.client_UpdatePortfolio: found symbol: " + e.Contract.Symbol + " whith amount: " + e.Position, Program.UserId);
+                    Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.client_UpdatePortfolio: found symbol: {0,-4} whith amount: {1,-4}" ,e.Contract.Symbol, e.Position), Program.UserId);
                 }
         }
     
@@ -230,19 +263,18 @@ namespace Ls_RSI_01
                 {
                     order.Status = e.Status;
                     counter++;
-                    Logger.WriteToLog(DateTime.Now, "ClientManager.ClientOrderStatus: Mode: " + Mode + " order: " + order.Symbol + " status: " + order.Status, " OrderStatus");
+                    Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.ClientOrderStatus : Client order status for market {0}: order: {1,-4},  status:{2,-4}, ", Mode, order.Symbol, order.Status), " OrderStatus");
                 }
         }
 
         static void ClientExecDetails(object sender, ExecDetailsEventArgs e)
         {
-            Logger.WriteToLog(DateTime.Now, "ClientManager.client_ExecDetails(): Execution Time: " + e.Execution.Time + ", Symbol: " + e.Contract.Symbol +
-                ", Side: " + e.Execution.Side + " Quantity: " + e.Execution.CumQuantity, " ExecDetails");
+            Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.client_ExecDetails(): Execution details for market {0} : Time: {1,-4}, Symbol: {2,-4}, Side: {3,-4}, Quantity: {4,-4} ", Mode, e.Execution.Time, e.Contract.Symbol, e.Execution.Side, e.Execution.CumQuantity), " ExecDetails");
         }
 
         static void ClientCurrentTime(object sender, CurrentTimeEventArgs e)
         {
-            Logger.WriteToLog(DateTime.Now, "ClientCurrentTime: " + e.Time, Program.UserId);
+            Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.ClientCurrentTime: {0}", e.Time), Program.UserId);
             fCurentTime = true;
         }
         
