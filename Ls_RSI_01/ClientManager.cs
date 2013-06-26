@@ -5,8 +5,8 @@ using Krs.Ats.IBNet.Contracts;
 using Ls_RSI_01.Helpers;
 using Ls_RSI_01.Model;
 using System.Threading;
-using Microsoft.Win32.TaskScheduler;
 using System.Diagnostics;
+using System.Configuration;
 
 namespace Ls_RSI_01
 {
@@ -14,10 +14,12 @@ namespace Ls_RSI_01
     {
         public static string Mode {get; set;}
 
-        private static int nextOrderId;
+        private static int nextOrderId; 
+        private static int runTwsProcesId;
+        private static int counter;
+        private static DateTime runTwsStartingTime;
         private static IBClient client;
         private static List<OrderInfo> orders = new List<OrderInfo>();
-        private static int counter;
         private static bool fCurentTime;
         private static bool fNextValisId;
         private static bool done;
@@ -30,7 +32,7 @@ namespace Ls_RSI_01
             //if args[1] = -1   :   Mode = "exit"
             GetProcessMode(args[1]);
 
-            Logger.WriteStartToLog(DateTime.Now, String.Format("Start Process for userId: {0} for {1}" , Program.UserId, Mode), Program.UserId);
+            Logger.WriteStartToLog(DateTime.Now, String.Format("Start Process for userId: {0} for market {1}." , Program.UserId, Mode), Program.UserId);
 
             DataContext dbmanager = new DataContext();
 
@@ -87,6 +89,18 @@ namespace Ls_RSI_01
                     Logger.WriteToLog(DateTime.Now, "Time Down", Program.UserId);
             }
 
+            //close tws
+            try
+            {
+                Process process = Process.GetProcessById(runTwsProcesId);
+                if (process.StartTime.Equals(runTwsStartingTime) && runTwsProcesId != 0)
+                    process.Kill();
+            }
+            catch (Exception e)
+            {
+                Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.start: {0}", e.Message), Program.UserId);
+            }
+   
             Logger.WriteToLog(DateTime.Now, "Done", Program.UserId);
         }
 
@@ -109,6 +123,7 @@ namespace Ls_RSI_01
 
         }
 
+        //try connect to tws, if it's closed run it and try again
         public static void ConnectToTws()
         {
             Random random = new Random();
@@ -120,17 +135,30 @@ namespace Ls_RSI_01
             }
             catch (Exception)
             {
-                Process runTws = new Process();
-                runTws.StartInfo.CreateNoWindow = false;
-                runTws.StartInfo.WorkingDirectory = "C:\\JTS_GA~1\\Jts";
-                runTws.StartInfo.FileName = "C:\\Windows\\system32\\javaw.exe";
-                runTws.StartInfo.Arguments = @"-cp jts.jar;total.2012.jar -Dsun.java2d.noddraw=true -Dswing.boldMetal=false -Dsun.locale.formatasdefault=true -Xmx768M -XX:MaxPermSize=128M jclient/LoginFrame C:\\JTS_GA~1\\Jts username=bbkin402 password=bbking75";
-                runTws.StartInfo.UseShellExecute = false;
-                runTws.StartInfo.RedirectStandardOutput = false;
-                runTws.Start(); 
-
+                try
+                {
+                    Process runTws = new Process
+                                 {
+                                     StartInfo =
+                                         {
+                                             CreateNoWindow = false,
+                                             WorkingDirectory = ConfigurationManager.AppSettings["WorkingDirectory"],
+                                             FileName = ConfigurationManager.AppSettings["FileName"],
+                                             Arguments = string.Format("{0} username={1} password={2}", ConfigurationManager.AppSettings["Arguments"], user.UserId, user.UserPassword),
+                                             UseShellExecute = false,
+                                             RedirectStandardOutput = false
+                                         }
+                                 };
+                    runTws.Start();
+                    runTwsProcesId = runTws.Id;
+                    runTwsStartingTime = runTws.StartTime;
+                }
+                catch (Exception e)
+                {
+                    Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.ConnectToTws: {0}", e.Message), Program.UserId);
+                }
+ 
                 Thread.Sleep(6*6000);
-                client.Connect("127.0.0.1", user.UserPort, randomNumber);
             }
         
         }
