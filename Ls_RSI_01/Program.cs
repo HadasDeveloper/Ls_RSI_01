@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Ls_RSI_01.Helpers;
 
 namespace Ls_RSI_01
@@ -9,6 +10,12 @@ namespace Ls_RSI_01
         
         static void Main(string[] args)
         {
+            foreach (Process process in Process.GetProcessesByName("Javaw"))
+            {
+                Console.WriteLine(process.Id);
+                process.Kill();
+            }
+ 
             switch (args.Length)
             {
                 // args[0] = UserId , //args[1] = 1/(-1) for enter/exit markat respectively

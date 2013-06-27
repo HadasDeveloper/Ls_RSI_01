@@ -8,6 +8,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Configuration;
 
+
 namespace Ls_RSI_01
 {
     public class ClientManager
@@ -32,12 +33,18 @@ namespace Ls_RSI_01
             //if args[1] = -1   :   Mode = "exit"
             GetProcessMode(args[1]);
 
+            Logger.WriteStartToLog(DateTime.Now, "starting Program", Program.UserId);
             Logger.WriteStartToLog(DateTime.Now, String.Format("Start Process for userId: {0} for market {1}." , Program.UserId, Mode), Program.UserId);
 
             DataContext dbmanager = new DataContext();
 
             //get user's settings 
             user = dbmanager.GetUserSettings(Program.UserId);
+            if (user.UserId == null)
+            {
+                Logger.WriteStartToLog(DateTime.Now, "wrong userId, cant find user settings" , Program.UserId);
+                return;
+            }
 
             //if mode = 'entry' calculate new rsi orders and then get last(new) RSI orders list
             if (Mode.Equals("entry"))
@@ -58,19 +65,18 @@ namespace Ls_RSI_01
             //connect to TWS
             int connectAttempt = 0;
 
-            while (!client.Connected && connectAttempt <= 3)
-            {    
+            //while (!client.Connected && connectAttempt <= 3)
+            //{
                 ConnectToTws();
-                connectAttempt++;
-            }
+                ConnectToTws();
+            //   connectAttempt++;
+            //}
 
             if (!client.Connected)
             {   
                 Logger.WriteToLog(DateTime.Now, "cannot connect to TWS, terminate the program", Program.UserId);
                 return;
             }
-
-            Logger.WriteToLog(DateTime.Now, "connected successfully to TWS", Program.UserId);
 
             client.RequestAccountUpdates(true, "");
             client.RequestCurrentTime();
@@ -86,7 +92,7 @@ namespace Ls_RSI_01
 
                 Thread.Sleep(1000);
                 if(DateTime.Now.Subtract(startingTime).Minutes >= 0.5)
-                    Logger.WriteToLog(DateTime.Now, "Time Down", Program.UserId);
+                    Logger.WriteToLog(DateTime.Now, "Program Time Down", Program.UserId);
             }
 
             //close tws
@@ -124,34 +130,43 @@ namespace Ls_RSI_01
 
             try
             {
+                Logger.WriteToLog(DateTime.Now, "try connct to tws", Program.UserId);
                 client.Connect("127.0.0.1", user.UserPort, randomNumber);
+                Logger.WriteToLog(DateTime.Now, "connected successfully to TWS", Program.UserId);
             }
             catch (Exception)
             {
-                try
+                Logger.WriteToLog(DateTime.Now, "cant find open Tws", Program.UserId);
+
+                //if there is now javaw Process running start new process
+                if (runTwsProcesId==0)
                 {
-                    Process runTws = new Process
-                                 {
-                                     StartInfo =
-                                         {
-                                             CreateNoWindow = false,
-                                             WorkingDirectory = ConfigurationManager.AppSettings["WorkingDirectory"],
-                                             FileName = ConfigurationManager.AppSettings["FileName"],
-                                             Arguments = string.Format("{0} username={1} password={2}", ConfigurationManager.AppSettings["Arguments"], user.UserId, user.UserPassword),
-                                             UseShellExecute = false,
-                                             RedirectStandardOutput = false
-                                         }
-                                 };
+                    Logger.WriteToLog(DateTime.Now, "starting new Tws process", Program.UserId);
+                     Process runTws = new Process
+                    {   StartInfo = { CreateNoWindow = false,
+                                        WorkingDirectory = ConfigurationManager.AppSettings["WorkingDirectory"],
+                                        FileName = ConfigurationManager.AppSettings["FileName"],
+                                        Arguments = string.Format("{0} username={1} password={2}", ConfigurationManager.AppSettings["Arguments"], user.UserId, user.UserPassword),
+                                        UseShellExecute = false,
+                                        RedirectStandardOutput = false }                     
+                    };
+                          
                     runTws.Start();
                     runTwsProcesId = runTws.Id;
                     runTwsStartingTime = runTws.StartTime;
+                    Logger.WriteToLog(DateTime.Now, "running Tws process", Program.UserId);
                 }
-                catch (Exception e)
-                {
-                    Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.ConnectToTws: {0}", e.Message), Program.UserId);
-                }
- 
-                Thread.Sleep(6*6000);
+
+                KaySender kay = new KaySender();
+
+                //for (int i = 0 ; i < 6 ; i++ )//60 seconds
+                //{
+                Logger.WriteToLog(DateTime.Now, "Before sending kay.send", Program.UserId);
+                Thread.Sleep(15000); // 15 seconds
+                kay.Send();
+                Logger.WriteToLog(DateTime.Now, "After sending kay.send", Program.UserId);
+                //}
+                Thread.Sleep(60000); // 30 seconds
             }
         
         }
@@ -267,6 +282,12 @@ namespace Ls_RSI_01
             Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.ClientCurrentTime: {0}", e.Time), Program.UserId);
             fCurentTime = true;
         }
-        
+
+
+        static void readProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            // Write what was sent in the event
+            Console.WriteLine("Data Recieved at {1}: {0}", e.Data, DateTime.UtcNow.Ticks);
+        }
     }
 }

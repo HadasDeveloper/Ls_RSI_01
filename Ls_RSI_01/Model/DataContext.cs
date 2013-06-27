@@ -52,12 +52,15 @@ namespace Ls_RSI_01.Model
 
             DataTable table = dbHelper.GetUserSettings(userId);
 
-            user.UserId = (string) table.Rows[0][0];
-            user.UserPassword = (string)table.Rows[0][1];
-            user.UserPort = (int)table.Rows[0][2];
-            user.Capital = (int)table.Rows[0][3];
-            user.NumberOfOrders = (int)table.Rows[0][4];
+            if (table.Rows.Count > 0)
+            {
+                user.UserId = (string) table.Rows[0][0];
+                user.UserPassword = (string)table.Rows[0][1];
+                user.UserPort = (int)table.Rows[0][2];
+                user.Capital = (int)table.Rows[0][3];
+                user.NumberOfOrders = (int)table.Rows[0][4];
 
+            }
             return user;
         }
     }

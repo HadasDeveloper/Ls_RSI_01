@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientManager.cs" />
+    <Compile Include="Helpers\KaySender.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Model\UserSetting .cs" />
     <Compile Include="Model\DataContext.cs" />
