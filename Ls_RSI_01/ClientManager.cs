@@ -79,10 +79,10 @@ namespace Ls_RSI_01
 
             // Close when all orders have been submited or 5 minutes have passed
             while (DateTime.Now.Subtract(startingTime).Minutes < 0.5 && counter < orders.Count)
-            { 
-                if(fCurentTime)
-                    if(fNextValisId && done==false)
-                        Work();
+            {
+                if (fCurentTime)
+                    if (fNextValisId && done == false)
+                        PlaceOrders();
 
                 Thread.Sleep(1000);
                 if(DateTime.Now.Subtract(startingTime).Minutes >= 0.5)
@@ -90,17 +90,10 @@ namespace Ls_RSI_01
             }
 
             //close tws
-            try
-            {
-                Process process = Process.GetProcessById(runTwsProcesId);
-                if (process.StartTime.Equals(runTwsStartingTime) && runTwsProcesId != 0)
-                    process.Kill();
-            }
-            catch (Exception e)
-            {
-                Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.start: {0}", e.Message), Program.UserId);
-            }
-   
+            int closeAttempt = 0;
+            while (!CloseTws() && closeAttempt < 3)
+                closeAttempt++;
+
             Logger.WriteToLog(DateTime.Now, "Done", Program.UserId);
         }
 
@@ -163,78 +156,58 @@ namespace Ls_RSI_01
         
         }
 
-
-        //navigate between the exit and entry to the market
-        public static void Work()
+        //close tws application and stops its javaw process
+        static public bool CloseTws()
         {
-            if (Mode.Equals("entry"))
-                PlaceOrdersForMarketEntry();
-            else
-                PlaceOrdersForMarketExit();
-
-            done = true;
-        }
-
-
-        //entry to the market and buy/sell orders determined by calculating the RSI values
-        static public void PlaceOrdersForMarketEntry()
-        {
-            int id = nextOrderId;
-           
-            Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForMarketEntry(): start placing orders for entry", Program.UserId);
-
-           foreach (OrderInfo order in orders)
+            try
             {
-                if (order.Amount == 0)
-                    continue;
-
-                Equity stock = new Equity(order.Symbol);
-                Order contract = new Order { Action = order.Direction == "Buy" ? ActionSide.Buy : ActionSide.Sell, TotalQuantity = order.Amount };
-                order.OrderId = id;
-
-                try
-                {
-                    client.PlaceOrder(id++, stock, contract);
-                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrdersForMarketEntry(): orderid: {0,-4} symbol:{1,-4} diraction:{2,-4} amount:{3,-4} stutus:{4,-4}", order.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity, order.Status),Program.UserId);
-                }
-                catch (Exception e)
-                {
-                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrdersForBuy(): {0}", e.Message), Program.UserId);
+                Process process = Process.GetProcessById(runTwsProcesId);
+                if (process.StartTime.Equals(runTwsStartingTime) && runTwsProcesId != 0)
+                {    
+                    process.Kill();
+                    Logger.WriteToLog(DateTime.Now, "Tws Process stoped successfully", Program.UserId);
+                    return true;
                 }
             }
+            catch (Exception e)
+            {
+                Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.start: {0}", e.Message), Program.UserId);
+                return false;
+            }
+            return false;
         }
 
-        //exit market by buy/sell only orders that appears in the protfolio and were determined in the last time for market entry 
-        static public void PlaceOrdersForMarketExit()
+        static public void PlaceOrders()
         {
             int id = nextOrderId;
 
-            Logger.WriteToLog(DateTime.Now, "ClientManager.PlaceOrdersForMarketExit(): start placing orders for exit", Program.UserId);
+            Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.PlaceOrders: start placing orders for {0}", Mode) , Program.UserId);
 
             foreach (OrderInfo order in orders)
             {
-                //if realAmount = 0 there is no order to sell 
-                if(order.RealAmount == 0)
+                Equity stock = new Equity(order.Symbol);
+
+                if(order.RealAmount == 0 && Mode.Equals("exit"))
                    continue;
 
-                Equity stock = new Equity(order.Symbol);
-                                               //if protfolio amount nagative, buy the order if, positive sell the order 
-                Order contract = new Order{ Action = order.RealAmount < 0 ? ActionSide.Buy : ActionSide.Sell, TotalQuantity = Math.Abs(order.RealAmount) };
+                if (order.Amount == 0 && Mode.Equals("entry"))
+                    continue;
+
+                Order contract = Mode.Equals("entry") ? new Order { Action = order.Direction == "Buy" ? ActionSide.Buy : ActionSide.Sell, TotalQuantity = order.Amount } : new Order { Action = order.RealAmount < 0 ? ActionSide.Buy : ActionSide.Sell, TotalQuantity = Math.Abs(order.RealAmount) };              
                 order.OrderId = id;
 
                 try
                 {
                     client.PlaceOrder(id++, stock, contract);
-                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrdersForMarketEntry(): orderid: {0,-4} symbol:{1,-4} diraction:{2,-4} amount:{3,-4} stutus:{4,-4}", contract.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity, order.Status), Program.UserId);
-                
+                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: orderid: {0,-4} symbol:{1,-4} diraction:{2,-4} amount:{3,-4} stutus:{4,-4}", order.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity, order.Status), Program.UserId);
                 }
                 catch (Exception e)
                 {
-                    Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.PlaceOrdersForSell(): {0}", e.Message), Program.UserId);
-                    
+                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: {0}", e.Message), Program.UserId);
                 }
             }
         }
+
 
         //-----------------------------event handlers-----------------------------
 
