@@ -139,18 +139,26 @@ namespace Ls_RSI_01
                 Logger.WriteToLog(DateTime.Now, "cant find open Tws", Program.UserId);
 
                 //if there is now javaw Process running start new process
-                if (runTwsProcesId==0)
+                if (runTwsProcesId == 0)
                 {
                     Logger.WriteToLog(DateTime.Now, "starting new Tws process", Program.UserId);
                     Process runTws = new Process
-                    {   StartInfo = { CreateNoWindow = false,
-                                        WorkingDirectory = ConfigurationManager.AppSettings["WorkingDirectory"],
-                                        FileName = ConfigurationManager.AppSettings["FileName"],
-                                        Arguments = string.Format("{0} username={1} password={2}", ConfigurationManager.AppSettings["Arguments"], user.UserId, user.UserPassword),
-                                        UseShellExecute = false,
-                                        RedirectStandardOutput = false }                     
-                    };
-                          
+                                         {
+                                             StartInfo =
+                                                 {
+                                                     CreateNoWindow = false,
+                                                     WorkingDirectory =
+                                                         ConfigurationManager.AppSettings["WorkingDirectory"],
+                                                     FileName = ConfigurationManager.AppSettings["FileName"],
+                                                     Arguments =
+                                                         string.Format("{0} username={1} password={2}",
+                                                                       ConfigurationManager.AppSettings["Arguments"],
+                                                                       user.UserId, user.UserPassword),
+                                                     UseShellExecute = false,
+                                                     RedirectStandardOutput = false
+                                                 }
+                                         };
+
                     runTws.Start();
                     runTwsProcesId = runTws.Id;
                     runTwsStartingTime = runTws.StartTime;
@@ -159,12 +167,18 @@ namespace Ls_RSI_01
 
                 Logger.WriteToLog(DateTime.Now, "Before sending kay.send", Program.UserId);
                 Thread.Sleep(15000); // 15 seconds
-                KeySender key = new KeySender();
-                key.Send();
-                Logger.WriteToLog(DateTime.Now, "After sending kay.send", Program.UserId);
 
-                Thread.Sleep(60000); // 60 seconds
-            }
+                KeySender key = new KeySender();
+                for (int i = 0; i < 10; i++)
+                {
+                    key.Send(runTwsProcesId);
+                    Logger.WriteToLog(DateTime.Now, string.Format("After sending kay.send at {0} time",i), Program.UserId);
+                    Thread.Sleep(6000); // 6 seconds
+
+                }
+                 //Thread.Sleep(60000); // 60 seconds
+                
+            }  
         
         }
 

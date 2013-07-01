@@ -32,14 +32,18 @@ namespace Ls_RSI_01.Helpers
         static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
         [STAThread]
-        public void Send()
+        public void Send(int procesId)
         {
             bool createdNew;
 
             using (Mutex mutex = new Mutex(true, "MyMutexName", out createdNew))
             {
-                foreach (Process process in Process.GetProcessesByName("Javaw"))
+                //foreach (Process process in Process.GetProcessesByName("Javaw"))
+                //{
+                if (procesId != 0)
                 {
+                    Process process = Process.GetProcessById(procesId);
+                
                     Console.WriteLine(process.Id);
                     IntPtr handle = process.MainWindowHandle;
                     try
@@ -56,20 +60,20 @@ namespace Ls_RSI_01.Helpers
                         {
                             Logger.WriteToLog(DateTime.Now, "Post Message", Program.UserId);
                             SetForegroundWindow(handle);
-                            SendMessage((IntPtr)HwndBroadcast, (int)WmKeydown, 0x20, 0);
-                            SendMessage((IntPtr)HwndBroadcast, (int)WmKeydown, 0x0D, 0);
+                            SendMessage((IntPtr) HwndBroadcast, (int) WmKeydown, 0x20, 0);
+                            SendMessage((IntPtr) HwndBroadcast, (int) WmKeydown, 0x0D, 0);
                             //PostMessage((IntPtr)HWND_BROADCAST, WM_ACTIVATEAPP, IntPtr.Zero, IntPtr.Zero);
                         }
-                }
-                catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         Logger.WriteToLog(DateTime.Now, "Error sending space key : " + e.Message, Program.UserId);
 
                         throw;
                     }
-
-                    break;
                 }
+                    //break;
+                //}
             }
         }
         
