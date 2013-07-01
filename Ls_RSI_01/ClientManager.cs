@@ -63,14 +63,10 @@ namespace Ls_RSI_01
             client.CurrentTime += (ClientCurrentTime);
 
             //connect to TWS
-            int connectAttempt = 0;
+            ConnectToTws();
+            if (!client.Connected)
+                ConnectToTws();
 
-            //while (!client.Connected && connectAttempt <= 3)
-            //{
-                ConnectToTws();
-                ConnectToTws();
-            //   connectAttempt++;
-            //}
 
             if (!client.Connected)
             {   
@@ -83,15 +79,19 @@ namespace Ls_RSI_01
            
             DateTime startingTime = DateTime.Now;
 
-            // Close when all orders have been submited or 5 minutes have passed
-            while (DateTime.Now.Subtract(startingTime).Minutes < 0.5 && counter < orders.Count)
+            // Close when all orders have been submited or 1.5 minutes have passed (counter = count orders that their status has changed)
+           //while (DateTime.Now.Subtract(startingTime).Minutes < 1.5 && counter < orders.Count)
+            while (done == false)
             {
                 if (fCurentTime)
-                    if (fNextValisId && done == false)
+                    //if (fNextValisId && done == false)
+                    if (fNextValisId)
+                    {   
                         PlaceOrders();
+                        Thread.Sleep(1000);//1 secound (Wait a second for writing to the log all the remained order status)
+                    }
 
-                Thread.Sleep(1000);
-                if(DateTime.Now.Subtract(startingTime).Minutes >= 0.5)
+                if (DateTime.Now.Subtract(startingTime).Minutes >= 1.5)
                     Logger.WriteToLog(DateTime.Now, "Program Time Down", Program.UserId);
             }
 
@@ -142,7 +142,7 @@ namespace Ls_RSI_01
                 if (runTwsProcesId==0)
                 {
                     Logger.WriteToLog(DateTime.Now, "starting new Tws process", Program.UserId);
-                     Process runTws = new Process
+                    Process runTws = new Process
                     {   StartInfo = { CreateNoWindow = false,
                                         WorkingDirectory = ConfigurationManager.AppSettings["WorkingDirectory"],
                                         FileName = ConfigurationManager.AppSettings["FileName"],
@@ -157,16 +157,13 @@ namespace Ls_RSI_01
                     Logger.WriteToLog(DateTime.Now, "running Tws process", Program.UserId);
                 }
 
-                KaySender kay = new KaySender();
-
-                //for (int i = 0 ; i < 6 ; i++ )//60 seconds
-                //{
                 Logger.WriteToLog(DateTime.Now, "Before sending kay.send", Program.UserId);
                 Thread.Sleep(15000); // 15 seconds
-                kay.Send();
+                KeySender key = new KeySender();
+                key.Send();
                 Logger.WriteToLog(DateTime.Now, "After sending kay.send", Program.UserId);
-                //}
-                Thread.Sleep(60000); // 30 seconds
+
+                Thread.Sleep(60000); // 60 seconds
             }
         
         }
@@ -186,7 +183,7 @@ namespace Ls_RSI_01
             }
             catch (Exception e)
             {
-                Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.start: {0}", e.Message), Program.UserId);
+                Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.CloseTws: {0}", e.Message), Program.UserId);
                 return false;
             }
             return false;
@@ -221,6 +218,7 @@ namespace Ls_RSI_01
                     Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: {0}", e.Message), Program.UserId);
                 }
             }
+            done = true;
         }
 
 
@@ -267,7 +265,7 @@ namespace Ls_RSI_01
                 if (order.OrderId == e.OrderId)
                 {
                     order.Status = e.Status;
-                    counter++;
+                    //counter++;
                     Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.ClientOrderStatus : Client order status for market {0}: order: {1,-4},  status:{2,-4}, ", Mode, order.Symbol, order.Status), " OrderStatus");
                 }
         }
@@ -283,11 +281,5 @@ namespace Ls_RSI_01
             fCurentTime = true;
         }
 
-
-        static void readProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            // Write what was sent in the event
-            Console.WriteLine("Data Recieved at {1}: {0}", e.Data, DateTime.UtcNow.Ticks);
-        }
     }
 }

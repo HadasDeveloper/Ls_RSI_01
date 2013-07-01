@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Ls_RSI_01.Helpers
 {
-    public class KaySender
+    public class KeySender
     {
 
         public const int HWND_BROADCAST = 0xFFFF;
