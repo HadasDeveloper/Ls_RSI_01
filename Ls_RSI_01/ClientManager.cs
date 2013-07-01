@@ -17,7 +17,7 @@ namespace Ls_RSI_01
 
         private static int nextOrderId; 
         private static int runTwsProcesId;
-        private static int counter;
+//        private static int counter;
         private static DateTime runTwsStartingTime;
         private static IBClient client;
         private static List<OrderInfo> orders = new List<OrderInfo>();

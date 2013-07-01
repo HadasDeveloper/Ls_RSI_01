@@ -8,8 +8,8 @@ namespace Ls_RSI_01.Helpers
     public class KeySender
     {
 
-        public const int HWND_BROADCAST = 0xFFFF;
-        private const UInt32 WM_KEYDOWN = 0x0100;
+        public const int HwndBroadcast = 0xFFFF;
+        private const UInt32 WmKeydown = 0x0100;
 
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -23,7 +23,7 @@ namespace Ls_RSI_01.Helpers
         [DllImport("user32")]
         public static extern int RegisterWindowMessage(string message);
 
-        public static readonly int WM_ACTIVATEAPP = RegisterWindowMessage("WM_ACTIVATEAPP");
+        public static readonly int WmActivateapp = RegisterWindowMessage("WM_ACTIVATEAPP");
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
@@ -49,15 +49,15 @@ namespace Ls_RSI_01.Helpers
                         {
                             Logger.WriteToLog(DateTime.Now, "Send Message", Program.UserId);
                             SetForegroundWindow(handle);
-                            SendMessage((IntPtr) HWND_BROADCAST, (int) WM_KEYDOWN, 0x20, 0);
-                            SendMessage((IntPtr) HWND_BROADCAST, (int) WM_KEYDOWN, 0x0D, 0);
+                            SendMessage((IntPtr) HwndBroadcast, (int) WmKeydown, 0x20, 0);
+                            SendMessage((IntPtr) HwndBroadcast, (int) WmKeydown, 0x0D, 0);
                         }
                         else
                         {
                             Logger.WriteToLog(DateTime.Now, "Post Message", Program.UserId);
                             SetForegroundWindow(handle);
-                            SendMessage((IntPtr)HWND_BROADCAST, (int)WM_KEYDOWN, 0x20, 0);
-                            SendMessage((IntPtr)HWND_BROADCAST, (int)WM_KEYDOWN, 0x0D, 0);
+                            SendMessage((IntPtr)HwndBroadcast, (int)WmKeydown, 0x20, 0);
+                            SendMessage((IntPtr)HwndBroadcast, (int)WmKeydown, 0x0D, 0);
                             //PostMessage((IntPtr)HWND_BROADCAST, WM_ACTIVATEAPP, IntPtr.Zero, IntPtr.Zero);
                         }
                 }
