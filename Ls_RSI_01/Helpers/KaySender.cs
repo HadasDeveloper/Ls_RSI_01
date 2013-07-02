@@ -38,8 +38,6 @@ namespace Ls_RSI_01.Helpers
 
             using (Mutex mutex = new Mutex(true, "MyMutexName", out createdNew))
             {
-                //foreach (Process process in Process.GetProcessesByName("Javaw"))
-                //{
                 if (procesId != 0)
                 {
                     Process process = Process.GetProcessById(procesId);
@@ -72,8 +70,6 @@ namespace Ls_RSI_01.Helpers
                         throw;
                     }
                 }
-                    //break;
-                //}
             }
         }
         

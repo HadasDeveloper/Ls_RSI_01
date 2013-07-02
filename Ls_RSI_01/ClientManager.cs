@@ -169,14 +169,10 @@ namespace Ls_RSI_01
                 Thread.Sleep(15000); // 15 seconds
 
                 KeySender key = new KeySender();
-                //for (int i = 0; i < 10; i++)
-                //{
+
                 key.Send(runTwsProcesId);
                 Logger.WriteToLog(DateTime.Now, string.Format("After sending kay.send"), Program.UserId);
                 Thread.Sleep(60000); // 60 seconds
-
-                //}
-                 //Thread.Sleep(60000); // 60 seconds
                 
             }  
         
