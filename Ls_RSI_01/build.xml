@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<project name="Ls_RSI_01" default="Ls_RSI_01">
+    <target name="TWSRunProperty">
+
+        <xmlpoke file="D:\\Projects\\Development\\Ls_RSI_01\\Ls_RSI_01\\app.config" xpath="//appSettings/add[@key='WorkingDirectory']/@value" value="C:\JTS_GA~1" />
+        <xmlpoke file="D:\\Projects\\Development\\Ls_RSI_01\\Ls_RSI_01\\app.config" xpath="//appSettings/add[@key='FileName']/@value" value="C:\Windows\SysWOW64\javaw.exe" />
+        <xmlpoke file="D:\\Projects\\Development\\Ls_RSI_01\\Ls_RSI_01\\app.config" xpath="//appSettings/add[@key='Arguments']/@value" value="-cp jts.jar;total.2012.jar -Dsun.java2d.noddraw=true -Dswing.boldMetal=false -Dsun.locale.formatasdefault=true -Xmx768M -XX:MaxPermSize=128M ibgateway.GWClient C:\JTS_GA~1" />
+
+        <echo message="Done building production"/>
+
+    </target>
+</project>

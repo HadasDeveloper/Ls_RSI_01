@@ -17,7 +17,6 @@ namespace Ls_RSI_01
 
         private static int nextOrderId; 
         private static int runTwsProcesId;
-//        private static int counter;
         private static DateTime runTwsStartingTime;
         private static IBClient client;
         private static List<OrderInfo> orders = new List<OrderInfo>();
@@ -171,7 +170,7 @@ namespace Ls_RSI_01
                 KeySender key = new KeySender();
 
                 key.Send(runTwsProcesId);
-                Logger.WriteToLog(DateTime.Now, string.Format("After sending kay.send"), Program.UserId);
+                Logger.WriteToLog(DateTime.Now, string.Format("After sending kay.send, "), Program.UserId);
                 Thread.Sleep(60000); // 60 seconds
                 
             }  
@@ -275,7 +274,6 @@ namespace Ls_RSI_01
                 if (order.OrderId == e.OrderId)
                 {
                     order.Status = e.Status;
-                    //counter++;
                     Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.ClientOrderStatus : Client order status for market {0}: order: {1,-4},  status:{2,-4}, ", Mode, order.Symbol, order.Status), " OrderStatus");
                 }
         }

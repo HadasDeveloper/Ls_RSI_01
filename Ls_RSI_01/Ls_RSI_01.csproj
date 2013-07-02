@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientManager.cs" />
-    <Compile Include="Helpers\KaySender.cs" />
+    <Compile Include="Helpers\KeySender.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Model\UserSetting .cs" />
     <Compile Include="Model\DataContext.cs" />
@@ -69,6 +69,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="build.xml" />
     <Content Include="lib\Krs.Ats.IBNet.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
