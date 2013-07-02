@@ -89,7 +89,7 @@ namespace Ls_RSI_01
 
                 Thread.Sleep(1000);//1 secound (Wait a second for writing to the log all the remained order status)
 
-                if (DateTime.Now.Subtract(startingTime).Minutes >= 1.5)
+                if (DateTime.Now.Subtract(startingTime).Minutes >= 2)
                 {   
                     Logger.WriteToLog(DateTime.Now, "Program Time Down", Program.UserId);
                     done = true;
@@ -167,7 +167,7 @@ namespace Ls_RSI_01
                 }
 
                 Logger.WriteToLog(DateTime.Now, "Before sending kay.send", Program.UserId);
-                Thread.Sleep(15000); // 15 seconds
+                Thread.Sleep(20000); // 20 seconds
 
                 KeySender key = new KeySender();
 
