@@ -45,12 +45,13 @@ namespace Ls_RSI_01
                 return;
             }
 
-            //if mode = 'entry' calculate new rsi orders and then get last(new) RSI orders list
+            //if mode = 'entry' calculate new rsi orders and get last(new) RSI orders list
+            //if mode = 'exit' sell all the orders in the protfolio  
             if (Mode.Equals("entry"))
+            {
                 dbmanager.CalculateTodaysOeders(user.UserId, user.NumberOfOrders, user.Capital, args[1]);
-
-            //if mode = 'sell' just get the last RSI orders list
-            orders = dbmanager.GetRsiOrders(user);
+                orders = dbmanager.GetRsiOrders(user);
+            }
 
             client = new IBClient {ThrowExceptions = true};
             client.NextValidId += (ClientNextValidId);
@@ -210,25 +211,36 @@ namespace Ls_RSI_01
             {
                 Equity stock = new Equity(order.Symbol);
 
-                if(order.RealAmount == 0 && Mode.Equals("exit"))
-                   continue;
-
-                if (order.Amount == 0 && Mode.Equals("entry"))
+               if (order.Amount == 0)
                     continue;
 
-                Order contract = Mode.Equals("entry") ? new Order { Action = order.Direction == "Buy" ? ActionSide.Buy : ActionSide.Sell, TotalQuantity = order.Amount } : new Order { Action = order.RealAmount < 0 ? ActionSide.Buy : ActionSide.Sell, TotalQuantity = Math.Abs(order.RealAmount) };              
+                Order contract = new Order
+                                            {
+                                                Action = order.Direction == "Buy" ? ActionSide.Buy : ActionSide.Sell,
+                                                TotalQuantity = order.Amount
+                                            };
+
+                contract.Tif = TimeInForce.Day;
+                   
                 order.OrderId = id;
 
                 try
                 {
                     client.PlaceOrder(id++, stock, contract);
-                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: orderid: {0,-4} symbol:{1,-4} diraction:{2,-4} amount:{3,-4} stutus:{4,-4}", order.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity, order.Status), Program.UserId);
+                    Logger.WriteToLog(DateTime.Now,
+                                        String.Format(
+                                            "ClientManager.PlaceOrders: orderid: {0,-4} symbol:{1,-4} diraction:{2,-4} amount:{3,-4} stutus:{4,-4}",
+                                            order.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity,
+                                            order.Status), Program.UserId);
                 }
                 catch (Exception e)
                 {
-                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: {0}", e.Message), Program.UserId);
+                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: {0}", e.Message),
+                                        Program.UserId);
                 }
             }
+
+
             done = true;
         }
 
@@ -254,13 +266,20 @@ namespace Ls_RSI_01
         //get all the orders in the tws protfolio
         static void ClientUpdatePortfolio(object sender, UpdatePortfolioEventArgs e)
         {
-            //Determines the real amount according to what appears in the portfolio
-            foreach (OrderInfo order in orders)
-                if (e.Contract.Symbol.Equals((order.Symbol)))
+            if(Mode.Equals("exit"))
+            {
+                if (e.Contract.SecurityType.Equals(SecurityType.Stock))
                 {
-                    order.RealAmount = e.Position;
-                    Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.client_UpdatePortfolio: found symbol: {0,-4} whith amount: {1,-4}" ,e.Contract.Symbol, e.Position), Program.UserId);
+                    OrderInfo order = new OrderInfo();
+                    order.Symbol = e.Contract.Symbol;
+                    order.Direction = e.Position < 0 ? "Buy" : "Sell";
+                    order.Amount = Math.Abs(e.Position);
+
+                    Logger.WriteToLog(DateTime.Now,string.Format("ClientManager.client_UpdatePortfolio: found symbol: {0,-4} whith amount: {1,-4}",
+                                          e.Contract.Symbol, e.Position), Program.UserId);
+                    orders.Add(order);
                 }
+            }
         }
     
         static void ClientUpdateAccountValue(object sender, UpdateAccountValueEventArgs e)
