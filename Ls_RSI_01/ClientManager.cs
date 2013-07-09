@@ -22,6 +22,7 @@ namespace Ls_RSI_01
         private static List<OrderInfo> orders = new List<OrderInfo>();
         private static bool fCurentTime;
         private static bool fNextValisId;
+        private static bool fPlaceOrders;
         private static bool done;
         private static UserSettings user;
 
@@ -206,9 +207,13 @@ namespace Ls_RSI_01
             return false;
         }
 
+
+        //Place the orders
         static public void PlaceOrders()
         {
             int id = nextOrderId;
+
+            fPlaceOrders = true;
 
             Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.PlaceOrders: start placing orders for {0}", Mode) , Program.UserId);
 
@@ -271,7 +276,7 @@ namespace Ls_RSI_01
         //get all the orders in the tws protfolio
         static void ClientUpdatePortfolio(object sender, UpdatePortfolioEventArgs e)
         {
-            if(Mode.Equals("exit"))
+            if (Mode.Equals("exit") && !fPlaceOrders)
             {
                 if (e.Contract.SecurityType.Equals(SecurityType.Stock))
                 {
@@ -283,6 +288,8 @@ namespace Ls_RSI_01
                     Logger.WriteToLog(DateTime.Now,string.Format("ClientManager.client_UpdatePortfolio: found symbol: {0,-4} whith amount: {1,-4}",
                                           e.Contract.Symbol, e.Position), Program.UserId);
                     orders.Add(order);
+
+                    
                 }
             }
         }
