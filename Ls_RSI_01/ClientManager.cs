@@ -33,7 +33,9 @@ namespace Ls_RSI_01
             GetProcessMode(args[1]);
 
             Logger.WriteStartToLog(DateTime.Now, "starting Program", Program.UserId);
-            Logger.WriteStartToLog(DateTime.Now, String.Format("Start Process for userId: {0} for market {1}." , Program.UserId, Mode), Program.UserId);
+            Logger.WriteStartToLog(DateTime.Now,
+                                   String.Format("Start Process for userId: {0} for market {1}.", Program.UserId, Mode),
+                                   Program.UserId);
 
             DataContext dbmanager = new DataContext();
 
@@ -41,12 +43,12 @@ namespace Ls_RSI_01
             user = dbmanager.GetUserSettings(Program.UserId);
             if (user.UserId == null)
             {
-                Logger.WriteStartToLog(DateTime.Now, "wrong userId, cant find user settings" , Program.UserId);
+                Logger.WriteStartToLog(DateTime.Now, "wrong userId, cant find user settings", Program.UserId);
                 return;
             }
 
             //if mode = 'entry' calculate new rsi orders and get last(new) RSI orders list
-            //if mode = 'exit' sell all the orders in the protfolio  
+            //if mode = 'exit' sell all the orders in the portfolio  
             if (Mode.Equals("entry"))
             {
                 dbmanager.CalculateTodaysOeders(user.UserId, user.NumberOfOrders, user.Capital, args[1]);
@@ -69,18 +71,18 @@ namespace Ls_RSI_01
 
 
             if (!client.Connected)
-            {   
+            {
                 Logger.WriteToLog(DateTime.Now, "cannot connect to TWS, terminate the program", Program.UserId);
                 return;
             }
 
             client.RequestAccountUpdates(true, "");
             client.RequestCurrentTime();
-           
+
             DateTime startingTime = DateTime.Now;
 
             // Close when all orders have been submited or 1.5 minutes have passed (counter = count orders that their status has changed)
-           //while (DateTime.Now.Subtract(startingTime).Minutes < 1.5 && counter < orders.Count)
+            //while (DateTime.Now.Subtract(startingTime).Minutes < 1.5 && counter < orders.Count)
             while (done == false)
             {
                 if (fCurentTime)
@@ -88,21 +90,24 @@ namespace Ls_RSI_01
                     if (fNextValisId)
                         PlaceOrders();
 
-                Thread.Sleep(1000);//1 secound (Wait a second for writing to the log all the remained order status)
+                Thread.Sleep(1000); //1 secound (Wait a second for writing to the log all the remained order status)
 
-                if (DateTime.Now.Subtract(startingTime).Minutes >= 2)
-                {   
+                if (DateTime.Now.Subtract(startingTime).Minutes >= 3)
+                {
                     Logger.WriteToLog(DateTime.Now, "Program Time Down", Program.UserId);
                     done = true;
                 }
             }
 
             //close tws
-            int closeAttempt = 0;
-            while (!CloseTws() && closeAttempt < 3)
+            if (runTwsProcesId != 0)
+            {
+                int closeAttempt = 0;
+                while (!CloseTws() && closeAttempt < 3)
                 closeAttempt++;
+            }
 
-            Logger.WriteToLog(DateTime.Now, "Done", Program.UserId);
+        Logger.WriteToLog(DateTime.Now, "Done", Program.UserId);
         }
 
         //Get action Mode (buy/sell) from program starting elements  
