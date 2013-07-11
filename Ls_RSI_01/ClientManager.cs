@@ -23,7 +23,8 @@ namespace Ls_RSI_01
         private static bool fCurentTime;
         private static bool fNextValisId;
         private static bool fPlaceOrders;
-        private static bool done;
+        private static bool fExecOrder;
+        private static bool fdone;
         private static UserSettings user;
 
         public static void Start(string[] args)
@@ -86,7 +87,7 @@ namespace Ls_RSI_01
 
             // Close when all orders have been submited or 1.5 minutes have passed (counter = count orders that their status has changed)
             //while (DateTime.Now.Subtract(startingTime).Minutes < 1.5 && counter < orders.Count)
-            while (done == false)
+            while (fdone == false)
             {
                 if (fCurentTime)
                     //if (fNextValisId && done == false)
@@ -95,10 +96,10 @@ namespace Ls_RSI_01
 
                 Thread.Sleep(1000); //1 secound (Wait a second for writing to the log all the remained order status)
 
-                if (DateTime.Now.Subtract(startingTime).Minutes >= 3)
+                if (DateTime.Now.Subtract(startingTime).Minutes >= 3.5)
                 {
                     Logger.WriteToLog(DateTime.Now, "Program Time Down", Program.UserId);
-                    done = true;
+                    fdone = true;
                 }
             }
 
@@ -218,9 +219,10 @@ namespace Ls_RSI_01
 
             foreach (OrderInfo order in orders)
             {
+                fExecOrder = false;
                 Equity stock = new Equity(order.Symbol);
 
-               if (order.Amount == 0)
+                if (order.Amount == 0)
                     continue;
 
                 Order contract = new Order{ Action = order.Direction == "Buy" ? ActionSide.Buy : ActionSide.Sell,TotalQuantity = order.Amount };
@@ -236,13 +238,12 @@ namespace Ls_RSI_01
                 }
                 catch (Exception e)
                 {
-                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: {0}", e.Message),
-                                        Program.UserId);
+                    Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: {0}", e.Message),Program.UserId);
                 }
             }
-
-
-            done = true;
+            
+                fdone = true;
+                Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: done placing orders"), Program.UserId);
         }
 
 
@@ -305,6 +306,7 @@ namespace Ls_RSI_01
         static void ClientExecDetails(object sender, ExecDetailsEventArgs e)
         {
             Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.client_ExecDetails(): Execution details for market {0} : Time: {1,-4}, Symbol: {2,-4}, Side: {3,-4}, Quantity: {4,-4} ", Mode, e.Execution.Time, e.Contract.Symbol, e.Execution.Side, e.Execution.CumQuantity), " ExecDetails");
+            fExecOrder = true;
         }
 
         static void ClientCurrentTime(object sender, CurrentTimeEventArgs e)
