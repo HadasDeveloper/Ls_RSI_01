@@ -8,7 +8,6 @@ using System.Threading;
 using System.Diagnostics;
 using System.Configuration;
 
-
 namespace Ls_RSI_01
 {
     public class ClientManager
@@ -17,6 +16,7 @@ namespace Ls_RSI_01
 
         private static int nextOrderId; 
         private static int runTwsProcesId;
+        private static int portfolioOedersCounter;
         private static DateTime runTwsStartingTime;
         private static IBClient client;
         private static List<OrderInfo> orders = new List<OrderInfo>();
@@ -67,13 +67,15 @@ namespace Ls_RSI_01
 
             //connect to TWS
             ConnectToTws();
-            if (!client.Connected)
+            if (!client.Connected)  
                 ConnectToTws();
-
+                
 
             if (!client.Connected)
             {
-                Logger.WriteToLog(DateTime.Now, "cannot connect to TWS, terminate the program", Program.UserId);
+                Logger.WriteToLog(DateTime.Now, "ClientManager.Start: cannot connect to TWS, terminate the program", Program.UserId);
+                if (runTwsProcesId!=0)
+                    CloseTws();
                 return;
             }
 
@@ -140,7 +142,9 @@ namespace Ls_RSI_01
             {
                 Logger.WriteToLog(DateTime.Now, "try connct to tws", Program.UserId);
                 client.Connect("127.0.0.1", user.UserPort, randomNumber);
-                Logger.WriteToLog(DateTime.Now, "connected successfully to TWS", Program.UserId);
+                Thread.Sleep(1000);
+                if (client.Connected)
+                    Logger.WriteToLog(DateTime.Now, "ClientManager.ConnectToTws: connected successfully to TWS", Program.UserId);
             }
             catch (Exception)
             {
@@ -155,18 +159,13 @@ namespace Ls_RSI_01
                                              StartInfo =
                                                  {
                                                      CreateNoWindow = false,
-                                                     WorkingDirectory =
-                                                         ConfigurationManager.AppSettings["WorkingDirectory"],
+                                                     WorkingDirectory = ConfigurationManager.AppSettings["WorkingDirectory"],
                                                      FileName = ConfigurationManager.AppSettings["FileName"],
-                                                     Arguments =
-                                                         string.Format("{0} username={1} password={2}",
-                                                                       ConfigurationManager.AppSettings["Arguments"],
-                                                                       user.UserId, user.UserPassword),
+                                                     Arguments = string.Format("{0} username={1} password={2}",ConfigurationManager.AppSettings["Arguments"], user.UserId, user.UserPassword),
                                                      UseShellExecute = false,
                                                      RedirectStandardOutput = false
                                                  }
                                          };
-
                     runTws.Start();
                     runTwsProcesId = runTws.Id;
                     runTwsStartingTime = runTws.StartTime;
@@ -224,11 +223,7 @@ namespace Ls_RSI_01
                if (order.Amount == 0)
                     continue;
 
-                Order contract = new Order
-                                            {
-                                                Action = order.Direction == "Buy" ? ActionSide.Buy : ActionSide.Sell,
-                                                TotalQuantity = order.Amount
-                                            };
+                Order contract = new Order{ Action = order.Direction == "Buy" ? ActionSide.Buy : ActionSide.Sell,TotalQuantity = order.Amount };
 
                 contract.Tif = TimeInForce.Day;
                    
@@ -237,11 +232,7 @@ namespace Ls_RSI_01
                 try
                 {
                     client.PlaceOrder(id++, stock, contract);
-                    Logger.WriteToLog(DateTime.Now,
-                                        String.Format(
-                                            "ClientManager.PlaceOrders: orderid: {0,-4} symbol:{1,-4} diraction:{2,-4} amount:{3,-4} stutus:{4,-4}",
-                                            order.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity,
-                                            order.Status), Program.UserId);
+                    Logger.WriteToLog(DateTime.Now,String.Format("ClientManager.PlaceOrders: orderid: {0,-4} symbol:{1,-4} diraction:{2,-4} amount:{3,-4} stutus:{4,-4}",order.OrderId, stock.Symbol, contract.Action, contract.TotalQuantity, order.Status), Program.UserId);
                 }
                 catch (Exception e)
                 {
@@ -285,11 +276,11 @@ namespace Ls_RSI_01
                     order.Direction = e.Position < 0 ? "Buy" : "Sell";
                     order.Amount = Math.Abs(e.Position);
 
-                    Logger.WriteToLog(DateTime.Now,string.Format("ClientManager.client_UpdatePortfolio: found symbol: {0,-4} whith amount: {1,-4}",
-                                          e.Contract.Symbol, e.Position), Program.UserId);
+                    Logger.WriteToLog(DateTime.Now,string.Format("ClientManager.client_UpdatePortfolio: {0}). found symbol: {1,-4} whith amount: {2,-4}",
+                                          portfolioOedersCounter, e.Contract.Symbol, e.Position), Program.UserId);
                     orders.Add(order);
+                    portfolioOedersCounter++;
 
-                    
                 }
             }
         }
