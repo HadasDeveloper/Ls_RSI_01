@@ -17,6 +17,7 @@ namespace Ls_RSI_01
         private static int nextOrderId; 
         private static int runTwsProcesId;
         private static int portfolioOedersCounter;
+        private static int execCounter;
         private static DateTime runTwsStartingTime;
         private static IBClient client;
         private static List<OrderInfo> orders = new List<OrderInfo>();
@@ -45,7 +46,7 @@ namespace Ls_RSI_01
             user = dbmanager.GetUserSettings(Program.UserId);
             if (user.UserId == null)
             {
-                Logger.WriteStartToLog(DateTime.Now, "wrong userId, cant find user settings", Program.UserId);
+                Logger.WriteToProgramLog(DateTime.Now, String.Format("wrong userId, cant find user settings for userId = {0}",Program.UserId));
                 return;
             }
 
@@ -75,6 +76,7 @@ namespace Ls_RSI_01
             if (!client.Connected)
             {
                 Logger.WriteToLog(DateTime.Now, "ClientManager.Start: cannot connect to TWS, terminate the program", Program.UserId);
+                Logger.WriteToProgramLog(DateTime.Now, string.Format("{0}: Could not connect to TWS", Program.UserId));
                 if (runTwsProcesId!=0)
                     CloseTws();
                 return;
@@ -99,6 +101,7 @@ namespace Ls_RSI_01
                 if (DateTime.Now.Subtract(startingTime).Minutes >= 3.5)
                 {
                     Logger.WriteToLog(DateTime.Now, "Program Time Down", Program.UserId);
+                    Logger.WriteToProgramLog(DateTime.Now, string.Format("{0}: Time Down", Program.UserId));
                     fdone = true;
                 }
             }
@@ -112,6 +115,7 @@ namespace Ls_RSI_01
             }
 
         Logger.WriteToLog(DateTime.Now, "Done", Program.UserId);
+        Logger.WriteToProgramLog(DateTime.Now, string.Format("{0}: Done",Program.UserId));
         }
 
         //Get action Mode (buy/sell) from program starting elements  
@@ -244,6 +248,7 @@ namespace Ls_RSI_01
             
                 fdone = true;
                 Logger.WriteToLog(DateTime.Now, String.Format("ClientManager.PlaceOrders: done placing orders"), Program.UserId);
+                Logger.WriteToProgramLog(DateTime.Now, string.Format("{0}: done placing {1} orders", Program.UserId,execCounter));
         }
 
 
@@ -305,6 +310,7 @@ namespace Ls_RSI_01
 
         static void ClientExecDetails(object sender, ExecDetailsEventArgs e)
         {
+            execCounter++;
             Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.client_ExecDetails(): Execution details for market {0} : Time: {1,-4}, Symbol: {2,-4}, Side: {3,-4}, Quantity: {4,-4} ", Mode, e.Execution.Time, e.Contract.Symbol, e.Execution.Side, e.Execution.CumQuantity), " ExecDetails");
             fExecOrder = true;
         }
