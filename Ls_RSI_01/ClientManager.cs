@@ -24,7 +24,6 @@ namespace Ls_RSI_01
         private static bool fCurentTime;
         private static bool fNextValisId;
         private static bool fPlaceOrders;
-        private static bool fExecOrder;
         private static bool fdone;
         private static UserSettings user;
 
@@ -223,7 +222,6 @@ namespace Ls_RSI_01
 
             foreach (OrderInfo order in orders)
             {
-                fExecOrder = false;
                 Equity stock = new Equity(order.Symbol);
 
                 if (order.Amount == 0)
@@ -312,7 +310,6 @@ namespace Ls_RSI_01
         {
             execCounter++;
             Logger.WriteToLog(DateTime.Now, string.Format("ClientManager.client_ExecDetails(): Execution details for market {0} : Time: {1,-4}, Symbol: {2,-4}, Side: {3,-4}, Quantity: {4,-4} ", Mode, e.Execution.Time, e.Contract.Symbol, e.Execution.Side, e.Execution.CumQuantity), " ExecDetails");
-            fExecOrder = true;
         }
 
         static void ClientCurrentTime(object sender, CurrentTimeEventArgs e)
