@@ -7,7 +7,8 @@ namespace Ls_RSI_01.Helpers
 {
     public static class Logger
     {
-        public static string FolderPath = string.Format(ConfigurationManager.AppSettings["folderPath"], Program.UserId, DateTime.Now.Year, DateTime.Now.ToString("MMM", CultureInfo.InvariantCulture));
+        private static string FolderPath = string.Format(ConfigurationManager.AppSettings["userFolderPath"], Program.UserId, DateTime.Now.Year, DateTime.Now.ToString("MMM", CultureInfo.InvariantCulture));
+        private static string globalfilePath = string.Format("{0}\\{1}.txt",ConfigurationManager.AppSettings["globalFolderPath"],DateTime.Now.ToString("yymmdd", CultureInfo.InvariantCulture));
 
         static Logger()
         {
@@ -46,9 +47,7 @@ namespace Ls_RSI_01.Helpers
 
         public static void WriteToProgramLog(DateTime time, string message)
         {
-            const string filePath = "logs\\ProgramLog.txt";
-
-            using (StreamWriter writer = new StreamWriter(filePath, true))
+            using (StreamWriter writer = new StreamWriter(globalfilePath, true))
             {
                 writer.WriteLine(time + " : " + message);
             }

@@ -36,9 +36,8 @@ namespace Ls_RSI_01
             GetProcessMode(args[1]);
 
             Logger.WriteStartToLog(DateTime.Now, "starting Program", Program.UserId);
-            Logger.WriteStartToLog(DateTime.Now,
-                                   String.Format("Start Process for userId: {0} for market {1}.", Program.UserId, Mode),
-                                   Program.UserId);
+            Logger.WriteToProgramLog(DateTime.Now,
+                                   String.Format("Start Process for userId: {0} for market {1}.", Program.UserId, Mode));
 
             DataContext dbmanager = new DataContext();
 
@@ -200,6 +199,7 @@ namespace Ls_RSI_01
                 {    
                     process.Kill();
                     Logger.WriteToLog(DateTime.Now, "Tws Process stoped successfully", Program.UserId);
+                    Logger.WriteToProgramLog(DateTime.Now, "Tws Process stoped successfully");
                     return true;
                 }
             }
