@@ -89,7 +89,7 @@ namespace Ls_RSI_01
 
             // Close when all orders have been submited or 1.5 minutes have passed (counter = count orders that their status has changed)
             //while (DateTime.Now.Subtract(startingTime).Minutes < 1.5 && counter < orders.Count)
-            while (fdone == false)
+            while (!fdone)
             {
                 if (fCurentTime)
                     //if (fNextValisId && done == false)
@@ -107,9 +107,9 @@ namespace Ls_RSI_01
             }
 
             //close tws
+            int closeAttempt = 0;
             if (runTwsProcesId != 0)
             {
-                int closeAttempt = 0;
                 while (!CloseTws() && closeAttempt < 3)
                 closeAttempt++;
             }
